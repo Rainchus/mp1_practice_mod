@@ -50,6 +50,10 @@ void cBootFunction(void) { //ran once on boot, initializes variables and such
     rng_calls_copy2 = 0x03EF;
     pipe_maze_scroll_speed = 150.0f;
     rng_calls = 0;
+    another_frame_count = 0;
+    controller1PressedButtons = 0;
+    controller1CurrentHeldButtons = 0;
+    controller1PreviousHeldButtons = 0;
 }
 
 void setDebugFontColor(int color) {
