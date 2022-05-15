@@ -28,12 +28,9 @@ u16* pressedButtons = (u16*)0x800ECC24;
 
 void readInputsWrapper(void) {
     void* unkPtr = (void*)0x800EE960;
-
-    if (D_800F3742 == 1) {
-        osContStartReadData(unkPtr);
-        osRecvMsg(unkPtr, 0, 1);
-        osContGetReadData(&unkControllerArray[unkOSStructArrayIndex]);
-    }
+    osContStartReadData(unkPtr);
+    osRecvMsg(unkPtr, 0, 1);
+    osContGetReadData(&unkControllerArray[unkOSStructArrayIndex]);
 }
 
 void advanceRNGBackwards(void) {
