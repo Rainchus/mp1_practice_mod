@@ -26,7 +26,15 @@ s32 frameAdvance = 0;
 OSContPad* p1Controller = (OSContPad*) 0x800ED3F4;
 u16* pressedButtons = (u16*)0x800ECC24;
 
+void readInputsWrapper(void) {
+    void* unkPtr = (void*)0x800EE960;
 
+    if (D_800F3742 == 1) {
+        osContStartReadData(unkPtr);
+        osRecvMsg(unkPtr, 0, 1);
+        osContGetReadData(&unkControllerArray[unkOSStructArrayIndex]);
+    }
+}
 
 void advanceRNGBackwards(void) {
     if (rng_calls != 0) {
@@ -289,7 +297,8 @@ void shyGuySaysTurnDisplay(void) {
 
 void copyInputs(void) {
     s16 buttonsTemp;
-    osContGetReadData((void*)0x800EE960); //copy controller data to osCont struct
+
+    readInputsWrapper();
     controller1PreviousHeldButtons = controller1CurrentHeldButtons;
     controller1CurrentHeldButtons = p1Controller->button;
     buttonsTemp = controller1CurrentHeldButtons & controller1PreviousHeldButtons;
@@ -356,7 +365,6 @@ void debugDrawThreadHook(void) {
     u8 blue = 0xFF;
     u8 alpha = 0x70;
     u32 combinedColor = (red << 24) | (green << 16) | (blue << 8) | alpha;
-    u16* oneFrameInputs = (u16*)0x800ECC24;
 
     while (1) {
         if (boxDrawn == -1) {
@@ -364,7 +372,7 @@ void debugDrawThreadHook(void) {
             boxDrawn = 1;
         }
 
-        if (*oneFrameInputs == D_UP) { //dpad up
+        if (controller1PressedButtons == D_UP) { //dpad up
             boxBool ^= 1;
         }
 

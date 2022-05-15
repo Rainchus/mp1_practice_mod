@@ -21,6 +21,10 @@ typedef struct box {
     u32 rgba;
 } box;
 
+typedef struct unkOSStructController {
+    /* 0x00 */ char unk_00[8];
+} unkOSStructController;
+
 extern u16 controller1PressedButtons;
 extern u16 controller1CurrentHeldButtons;
 extern u16 controller1PreviousHeldButtons;
@@ -43,8 +47,15 @@ void sleepVProcess(void);
 void func_80018B2C(void);
 void func_8001E5A0(s32);
 void func_800247FC(void*, s32);
+void func_80013974(s32);
+extern s16 D_800F3742;
 
+void osContStartReadData(void*);
 void osContGetReadData(void*);
+void osRecvMsg(void*, s32, s32);
+extern unkOSStructController unkControllerArray[8];
+extern s16 unkOSStructArrayIndex;
+
 void func_8002B6C8(void);
 void func_8001DFC0(void);
 void func_80025658(s32, s32);

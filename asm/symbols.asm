@@ -27,7 +27,14 @@
 .definelabel func_8001DFC0, 0x8001DFC0
 .definelabel func_80025658, 0x80025658
 .definelabel func_800621D8, 0x800621D8
-.definelabel osContGetReadData, 0x80090120
+.definelabel osContStartReadData, 0x80090120
+.definelabel osContGetReadData, 0x800901A8
+.definelabel unkControllerArray, 0x800D1170
+.definelabel unkOSStruct, 0x800EE960
+.definelabel osRecvMsg, 0x800889E0
+.definelabel unkOSStructArrayIndex, 0x800D12B4
+.definelabel func_80013974, 0x80013974
+.definelabel D_800F3742, 0x800F3742
 
 //custom data
 .definelabel another_frame_count, 0x807FFFBC
