@@ -11,15 +11,19 @@ Displays frame count in bumper balls</br>
 Displays scroll speed of camera in pipe maze as percentage</br>
 Displays lag frames that have occurred at the bottom right</br>
 Displays fps at bottom right</br>
+Displays frame count in cyan at bottom right</br>
 </br>
 Controls:</br>
-While on minigame island overworld, the C-stick can advance or rollback the rng seed (also updates the calls accordingly)</br>
+While on minigame island overworld:</br>
 C-up advances the seed forwards by 1</br>
 C-down advances the seed backwards by 1</br>
 C-right advances the seed forwards by 16</br>
 C-left advances the seed backwards by 16</br>
-R resets the lag frames to 0</br>
-Can toggle top left box display with L (since it can get in the way for certain minigames)</br>
+R toggles frame advance while L steps 1 frame forward</br>
+Dpad up toggles the box display at the top left of the screen</br>
+Dpad left saves the current seed</br>
+Dpad down loads the saved seed</br>
+Dpad right resets the lag counter</br>
 </br>
 While in pipe maze minigame:</br>
 C-stick up/down will increase/decrease the scroll speed of the camera by 10% (default scroll speed is 150)</br>

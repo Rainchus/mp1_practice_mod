@@ -72,6 +72,10 @@ NOP
 J minigameIslandLivesDisplayHook
 NOP
 
+.org 0x8001A3DC
+J mainThreadHook2
+NOP
+
 
 //RAM 800F8F24
 //ROM 116704
@@ -79,3 +83,8 @@ NOP
 .org 0x800F8F24
 J pipeMazeScrollHook
 NOP
+
+.headersize 0x7FFCA9C0
+.org 0x800F696C
+J faceLiftScoreDisplayHook
+ADDIU sp, sp, 0x38

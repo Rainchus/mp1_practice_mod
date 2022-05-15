@@ -3,10 +3,15 @@
 char seed[] = "Seed\x7A";
 char calls[] = "Calls\x7A";
 
-s32 boxBool = 1;
-
 void customTextDraw(void);
 void print_fps(s32 x, s32 y);
+
+typedef struct OSContPad {
+    unsigned short 	button;     /* Controller button data */
+    char  			stick_x;    /* Control stick's X coordinate position*/
+    char  			stick_y;    /* Control stick's Y coordinate position*/
+    unsigned char  	errno;      /* Error values returned from the Controller */
+} OSContPad;//800ED3F0 p1
 
 enum colors {
     purple_color = 0x03,
@@ -15,12 +20,13 @@ enum colors {
 	yellow_color = 0x0E
 };
 
-typedef struct OSContPad {
-    unsigned short 	button;     /* Controller button data */
-    char  			stick_x;    /* Control stick's X coordinate position*/
-    char  			stick_y;    /* Control stick's Y coordinate position*/
-    unsigned char  	errno;      /* Error values returned from the Controller */
-} OSContPad;//800ED3F0 p1
+s32 boxBool = 1;
+s32 pauseBool = 0;
+s32 frameAdvance = 0;
+OSContPad* p1Controller = (OSContPad*) 0x800ED3F4;
+u16* pressedButtons = (u16*)0x800ECC24;
+
+
 
 void advanceRNGBackwards(void) {
     if (rng_calls != 0) {
@@ -36,12 +42,14 @@ void cBootFunction(void) { //ran once on boot, initializes variables and such
     print_time_length_saved2 = 0;
     print_time_length_load2 = 0;
     frame_count = 0;
+    another_frame_count = 0;
     lag_frames = 0;
     rng_seed_copy1 = 0xA70DCEFB;
     rng_calls_copy1 = 0x003A;
     rng_seed_copy2 = 0x2297B5D4;
     rng_calls_copy2 = 0x03EF;
     pipe_maze_scroll_speed = 150.0f;
+    rng_calls = 0;
 }
 
 void setDebugFontColor(int color) {
@@ -71,12 +79,12 @@ void customTextDraw(void) {
 	char B_ButtonString[] = "B";
 	char Z_ButtonString[] = "Z";
     char Start_ButtonString[] = "S";
-    char DLeft[] = "L";
-    char DUp[] = "U";
-    char DRight[] = "R";
-    char DDown[] = "D";
-    short* oneFrameInputs = (short*)0x800ECC24;
-	OSContPad* p1Controller = (OSContPad*) 0x800ED3F4;
+    char DLeft[] = "DL";
+    char DUp[] = "DUP";
+    char DRight[] = "DR";
+    char DDown[] = "DD";
+    char LText[] = "L";
+    char RText[] = "R";
 
     if (print_time_length_saved1 != 0) {
       	setDebugFontColor(purple_color);
@@ -112,46 +120,55 @@ void customTextDraw(void) {
 	setDebugFontColor(green_color);
 	mp1_sprintf(rngCallsString, "CALLS\x7A%08X", rng_calls);
 	drawDebugText(16, 30, rngCallsString);
-	if (p1Controller->button & 0x8000) { //if holding A, print "A"
+
+	if (p1Controller->button & A_BUTTON) { //if holding A, print "A"
         setDebugFontColor(green_color);
 		drawDebugText(16, 40, A_ButtonString);
 	}
 
-    
-	if (p1Controller->button & 0x4000) { //if holding B, print "B"
+	if (p1Controller->button & B_BUTTON) { //if holding B, print "B"
         setDebugFontColor(green_color);
 		drawDebugText(26, 40, B_ButtonString);
 	}
 
-	if (p1Controller->button & 0x2000) { //if holding Z, print "Z"
+	if (p1Controller->button & Z_BUTTON) { //if holding Z, print "Z"
         setDebugFontColor(green_color);
 		drawDebugText(36, 40, Z_ButtonString);
 	}
 
-	if (p1Controller->button & 0x1000) { //if holding start, print "S"
+	if (p1Controller->button & START) { //if holding start, print "S"
         setDebugFontColor(green_color);
 		drawDebugText(46, 40, Start_ButtonString);
 	}
 
-	if (p1Controller->button & 0x0800) { //dpad up
+	if (p1Controller->button & D_UP) { //dpad up
         setDebugFontColor(green_color);
 		drawDebugText(55, 40, DUp);
 	}
 
-	if (p1Controller->button & 0x0400) { //dpad down
+	if (p1Controller->button & D_DOWN) { //dpad down
 	    setDebugFontColor(green_color);
 		drawDebugText(64, 40, DDown);	
 	}
 
-	if (p1Controller->button & 0x0200) { //dpad left
-
+	if (p1Controller->button & D_LEFT) { //dpad left
 		setDebugFontColor(green_color);
 		drawDebugText(73, 40, DLeft);
 	}
 
-	if (p1Controller->button & 0x0100) { //dpad right
+	if (p1Controller->button & D_RIGHT) { //dpad right
 		setDebugFontColor(green_color);
 		drawDebugText(82, 40, DRight);
+	}
+
+	if (p1Controller->button & L_BUTTON) { //L button
+		setDebugFontColor(green_color);
+		drawDebugText(100, 40, LText);
+	}
+
+	if (p1Controller->button & R_BUTTON) { //R button
+		setDebugFontColor(green_color);
+		drawDebugText(109, 40, RText);
 	}
 
     mp1_sprintf(xInput, "%d", p1Controller->stick_x);
@@ -162,63 +179,50 @@ void customTextDraw(void) {
 	setDebugFontColor(green_color);
     drawDebugText(46, 50, yInput);
 
-
-    if (*oneFrameInputs == 0x0800) { //dpad up
-        rng_seed_copy2 = rng_seed;
-        rng_calls_copy2 = rng_calls;
-        print_time_length_saved2 = 75;
-    }
-
-    if (*oneFrameInputs == 0x0200) { //dpad left
+    if (*pressedButtons == 0x0200) { //dpad left
         rng_seed_copy1 = rng_seed;
         rng_calls_copy1 = rng_calls;
         print_time_length_saved1 = 75;
     }
 
-    if (*oneFrameInputs == 0x0400) { //dpad down
+    if (*pressedButtons == 0x0400) { //dpad down
         rng_seed = rng_seed_copy1;
         rng_calls = rng_calls_copy1;
         print_time_length_load1 = 75;
     }
 
-    if (*oneFrameInputs == 0x0100) { //dpad right
-        rng_seed = rng_seed_copy2;
-        rng_calls = rng_calls_copy2;
-        print_time_length_load2 = 75;
+    if (*pressedButtons == D_RIGHT) { //dpad right
+        frame_count = __osVIIntrCount / 2; //reset lag counter
     }
-
-    if (*oneFrameInputs == 0x0010) { //R
-        frame_count = __osVIIntrCount / 2;
-    }
-
-    // if (*oneFrameInputs == 0x0008) { //c-up
-    //     GetRandomByte(); //advance RNG once
-    // }
-
-    // if (*oneFrameInputs == 0x0004) { //c-down
-    //     advanceRNGBackwards();
-    // }
-
-    // if (*oneFrameInputs == 0x0002) { //c-left
-    //     for (int i = 0; i < 0x10; i++) {
-    //         advanceRNGBackwards(); //advance RNG backwards 16 times
-    //     }
-    // }
-
-    // if (*oneFrameInputs == 0x0001) { //c-right
-    //     for (int i = 0; i < 0x10; i++) {
-    //         GetRandomByte(); //advance RNG 16 times
-    //     }
-    // }
 }
 
 void printStats(void) {
     char VICountBuffer[15];
+    char secondFrameCounter[15];
+    s32 frameCountXPos;
 
     mp1_sprintf(VICountBuffer, "%d", lag_frames);
 	setDebugFontColor(green_color);
-	drawDebugText(263, 210, VICountBuffer);
-    print_fps(263, 220);
+	drawDebugText(263, 200, VICountBuffer);
+
+    print_fps(263, 210);
+
+    mp1_sprintf(secondFrameCounter, "%d", another_frame_count);
+	setDebugFontColor(cyan_color);
+    if (another_frame_count < 100000) {
+        frameCountXPos = 263;
+    } else if (another_frame_count < 1000000) {
+        frameCountXPos = 255;
+    } else if (another_frame_count < 10000000) {
+        frameCountXPos = 247;
+    } else if (another_frame_count < 100000000) {
+        frameCountXPos = 239;
+    } else if (another_frame_count < 1000000000) {
+        frameCountXPos = 231;
+    } else {
+        frameCountXPos = 222;
+    }
+	drawDebugText(frameCountXPos, 220, secondFrameCounter);
 }
 
 void cCompareVICount(void) {
@@ -279,6 +283,27 @@ void shyGuySaysTurnDisplay(void) {
 	drawDebugText(16, 220, turnCountText);
 }
 
+void copyInputs(void) {
+    s16 buttonsTemp;
+    osContGetReadData((void*)0x800EE960); //copy controller data to osCont struct
+    controller1PreviousHeldButtons = controller1CurrentHeldButtons;
+    controller1CurrentHeldButtons = p1Controller->button;
+    buttonsTemp = controller1CurrentHeldButtons & controller1PreviousHeldButtons;
+    controller1PressedButtons = buttonsTemp ^ controller1CurrentHeldButtons;
+}
+
+void stepFrame(void) {
+    if (controller1PressedButtons & L_BUTTON) {
+        frameAdvance = 1;
+        controller1PressedButtons = 0;
+    }
+
+    if (controller1PressedButtons & R_BUTTON) {
+        pauseBool = 0;
+        controller1PressedButtons = 0;
+    }
+}
+
 void mainThreadHook(void) {
     while(1) {
         sleepVProcess();
@@ -289,13 +314,45 @@ void mainThreadHook(void) {
     }
 }
 
+void mainThreadHook2(void) {
+    while(1) {
+        if (pauseBool == 0) {
+            sleepVProcess();
+            func_8002B6C8();
+            func_8001DFC0();
+            func_80025658(0x02000000, 0x003D0800);
+            func_800621D8();
+            copyInputs();
+            if (controller1PressedButtons & R_BUTTON) {
+                pauseBool ^= 1;
+                controller1PressedButtons = 0;
+            }
+            another_frame_count++;
+        } else {
+            if (frameAdvance == 1) {
+                sleepVProcess();
+                func_8002B6C8();
+                func_8001DFC0();
+                func_80025658(0x02000000, 0x003D0800);
+                func_800621D8();
+                frameAdvance = 0;
+                controller1PressedButtons = 0;
+                another_frame_count++;
+            } else {
+                copyInputs();
+                stepFrame();
+            }
+        }
+    }
+}
+
 void debugDrawThreadHook(void) {
     u8 red = 0;
     u8 green = 0;
     u8 blue = 0xFF;
     u8 alpha = 0x70;
     u32 combinedColor = (red << 24) | (green << 16) | (blue << 8) | alpha;
-    s16* oneFrameInputs = (short*)0x800ECC24;
+    u16* oneFrameInputs = (u16*)0x800ECC24;
 
     while (1) {
         if (boxDrawn == -1) {
@@ -303,7 +360,7 @@ void debugDrawThreadHook(void) {
             boxDrawn = 1;
         }
 
-        if (*oneFrameInputs == 0x0020) { //L
+        if (*oneFrameInputs == D_UP) { //dpad up
             boxBool ^= 1;
         }
 
@@ -405,4 +462,13 @@ void pipeMazeScrollHook(void) {
             D_800F9A34_pm = 2;
         }
     }
+}
+
+void faceLiftScoreDisplayHook(void) {
+    //char scoresText[40];
+    //func_800FB9E8(); //calculate scores (does more than just this actually)
+
+    // mp1_sprintf(scoresText, "P1:%d P2:%d P3:%d P4:%d", D_800FCA02[0], D_800FCA02[1], D_800FCA02[2], D_800FCA02[3]);
+	// setDebugFontColor(green_color);
+	// drawDebugText(16, 220, scoresText); 
 }

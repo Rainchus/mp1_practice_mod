@@ -1,5 +1,16 @@
 #include "types.h"
 
+#define A_BUTTON 0x8000
+#define B_BUTTON 0x4000
+#define Z_BUTTON 0x2000
+#define START 0x1000
+#define D_UP 0x0800
+#define D_DOWN 0x0400
+#define D_LEFT 0x0200
+#define D_RIGHT 0x0100
+#define L_BUTTON 0x0020
+#define R_BUTTON 0x0010
+
 typedef struct box {
     s16 activeBool;
     s16 unk_02;
@@ -10,6 +21,9 @@ typedef struct box {
     u32 rgba;
 } box;
 
+extern u16 controller1PressedButtons;
+extern u16 controller1CurrentHeldButtons;
+extern u16 controller1PreviousHeldButtons;
 extern box box0Struct;
 extern s8 minigameIslandLives;
 
@@ -30,13 +44,21 @@ void func_80018B2C(void);
 void func_8001E5A0(s32);
 void func_800247FC(void*, s32);
 
+void osContGetReadData(void*);
+void func_8002B6C8(void);
+void func_8001DFC0(void);
+void func_80025658(s32, s32);
+void func_800621D8(void);
+
 void func_8005E3FC(void);
 
+extern s16 D_800FCA02[4];
 extern s16 boxDrawn;
 extern s32 bumper_balls_frame_counter;
 extern u32 rngSeed;
 u8 GetRandomByte(void);
 extern u32 lag_frames;
+extern u32 another_frame_count;
 extern u32 frame_count;
 extern u32 __osVIIntrCount;
 void drawDebugText(s32 xPos, s32 yPos, char* string);
@@ -59,3 +81,10 @@ extern s8 D_800F64F2_pm;
 extern f32 D_800F6528_pm[2]; //camera
 extern s32 D_800F990C_pm;
 extern s32 D_800F9A34_pm;
+
+//face lift
+void func_800FB9E8(void);
+
+
+//800C3430 DL of village main
+//800C33B0 DL of piep in village

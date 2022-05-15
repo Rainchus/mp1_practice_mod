@@ -23,8 +23,17 @@
 .definelabel func_800635B4, 0x800635B4
 .definelabel func_800672B0, 0x800672B0
 .definelabel D_800D84E4, 0x800D84E4
+.definelabel func_8002B6C8, 0x8002B6C8
+.definelabel func_8001DFC0, 0x8001DFC0
+.definelabel func_80025658, 0x80025658
+.definelabel func_800621D8, 0x800621D8
+.definelabel osContGetReadData, 0x80090120
 
 //custom data
+.definelabel another_frame_count, 0x807FFFBC
+.definelabel controller1PressedButtons, 0x807FFFC0
+.definelabel controller1CurrentHeldButtons, 0x807FFFC4
+.definelabel controller1PreviousHeldButtons, 0x807FFFC8
 .definelabel pipe_maze_scroll_speed, 0x807FFFCC
 .definelabel bumper_balls_frame_counter, 0x807FFFD0
 .definelabel lag_frames, 0x807FFFD4
@@ -44,3 +53,7 @@
 .definelabel D_800F6528_pm, 0x800F6528
 .definelabel D_800F990C_pm, 0x800F990C
 .definelabel D_800F9A34_pm, 0x800F9A34
+
+//face lift
+.definelabel func_800FB9E8, 0x800FB9E8
+.definelabel D_800FCA02, 0x800FCA02
