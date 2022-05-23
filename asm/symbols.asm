@@ -37,6 +37,7 @@
 .definelabel D_800F3742, 0x800F3742
 
 //custom data
+.definelabel isLoading, 0x807FFFB8
 .definelabel another_frame_count, 0x807FFFBC
 .definelabel controller1PressedButtons, 0x807FFFC0
 .definelabel controller1CurrentHeldButtons, 0x807FFFC4

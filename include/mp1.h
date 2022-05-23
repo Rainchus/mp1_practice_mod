@@ -50,6 +50,8 @@ void func_800247FC(void*, s32);
 void func_80013974(s32);
 extern s16 D_800F3742;
 
+extern s32 isLoading;
+
 void osContStartReadData(void*);
 void osContGetReadData(void*);
 void osRecvMsg(void*, s32, s32);

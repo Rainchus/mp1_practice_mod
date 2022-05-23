@@ -295,11 +295,13 @@ void shyGuySaysTurnDisplay(void) {
 void copyInputs(void) {
     s16 buttonsTemp;
 
-    readInputsWrapper();
-    controller1PreviousHeldButtons = controller1CurrentHeldButtons;
-    controller1CurrentHeldButtons = p1Controller->button;
-    buttonsTemp = controller1CurrentHeldButtons & controller1PreviousHeldButtons;
-    controller1PressedButtons = buttonsTemp ^ controller1CurrentHeldButtons;
+    if (isLoading == 0) {
+        readInputsWrapper();
+        controller1PreviousHeldButtons = controller1CurrentHeldButtons;
+        controller1CurrentHeldButtons = p1Controller->button;
+        buttonsTemp = controller1CurrentHeldButtons & controller1PreviousHeldButtons;
+        controller1PressedButtons = buttonsTemp ^ controller1CurrentHeldButtons;
+    }
 }
 
 void stepFrame(void) {
@@ -326,35 +328,45 @@ void mainThreadHook(void) {
 
 void mainThreadHook2(void) {
     while(1) {
-        if (pauseBool == 0) {
-            sleepVProcess();
-            func_8002B6C8();
-            func_8001DFC0();
-            func_80025658(0x02000000, 0x003D0800);
-            func_800621D8();
-            copyInputs();
-            if (controller1PressedButtons & R_BUTTON) {
-                pauseBool ^= 1;
-                controller1PressedButtons = 0;
-            }
-            another_frame_count++;
-        } else {
-            if (frameAdvance == 1) {
-                sleepVProcess();
-                func_8002B6C8();
-                func_8001DFC0();
-                func_80025658(0x02000000, 0x003D0800);
-                func_800621D8();
-                frameAdvance = 0;
-                controller1PressedButtons = 0;
-                another_frame_count++;
-            } else {
-                copyInputs();
-                stepFrame();
-            }
-        }
+        sleepVProcess();
+        func_8002B6C8();
+        func_8001DFC0();
+        func_80025658(0x02000000, 0x003D0800);
+        func_800621D8();
     }
 }
+
+// void mainThreadHook2(void) {
+//     while(1) {
+//         if (pauseBool == 0) {
+//             sleepVProcess();
+//             func_8002B6C8();
+//             func_8001DFC0();
+//             func_80025658(0x02000000, 0x003D0800);
+//             func_800621D8();
+//             copyInputs();
+//             if (controller1PressedButtons & R_BUTTON) {
+//                 pauseBool ^= 1;
+//                 controller1PressedButtons = 0;
+//             }
+//             another_frame_count++;
+//         } else {
+//             if (frameAdvance == 1) {
+//                 sleepVProcess();
+//                 func_8002B6C8();
+//                 func_8001DFC0();
+//                 func_80025658(0x02000000, 0x003D0800);
+//                 func_800621D8();
+//                 frameAdvance = 0;
+//                 controller1PressedButtons = 0;
+//                 another_frame_count++;
+//             } else {
+//                 copyInputs();
+//                 stepFrame();
+//             }
+//         }
+//     }
+// }
 
 void debugDrawThreadHook(void) {
     u8 red = 0;

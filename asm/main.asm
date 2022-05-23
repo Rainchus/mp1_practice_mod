@@ -3,6 +3,6 @@
 .include "asm/symbols.asm" // Include mp1.asm to tell armips' linker where to find the game's function(s)
 .include "asm/bootPatch.asm" //patch boot routine to DMA our code from ROM
 .headersize 0x7E712B70 // Set the displacement between ROM and RAM addresses
-.org 0x80400200
+.org 0x80400800
 .importobj "obj/main.o" // Import and link the compiled C object, overwriting the useless function with our new code
 .close // Close the ROM file
