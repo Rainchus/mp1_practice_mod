@@ -318,36 +318,44 @@ void mainThreadHook(void) {
     }
 }
 
-void mainThreadHook2(void) {
-    while(1) {
-        if (pauseBool == 0) {
-            sleepVProcess();
-            func_8002B6C8();
-            func_8001DFC0();
-            func_80025658(0x02000000, 0x003D0800);
-            func_800621D8();
-            copyInputs();
-            if (controller1PressedButtons & R_BUTTON) {
-                pauseBool ^= 1;
-                controller1PressedButtons = 0;
-            }
-            another_frame_count++;
-        } else {
-            if (frameAdvance == 1) {
-                sleepVProcess();
-                func_8002B6C8();
-                func_8001DFC0();
-                func_80025658(0x02000000, 0x003D0800);
-                func_800621D8();
-                frameAdvance = 0;
-                controller1PressedButtons = 0;
-                another_frame_count++;
-            } else {
-                copyInputs();
-                stepFrame();
-            }
-        }
-    }
+// void mainThreadHook2(void) {
+//     while(1) {
+//         if (pauseBool == 0) {
+//             sleepVProcess();
+//             func_8002B6C8();
+//             func_8001DFC0();
+//             func_80025658(0x02000000, 0x003D0800);
+//             func_800621D8();
+//             copyInputs();
+//             if (controller1PressedButtons & R_BUTTON) {
+//                 pauseBool ^= 1;
+//                 controller1PressedButtons = 0;
+//             }
+//             another_frame_count++;
+//         } else {
+//             if (frameAdvance == 1) {
+//                 sleepVProcess();
+//                 func_8002B6C8();
+//                 func_8001DFC0();
+//                 func_80025658(0x02000000, 0x003D0800);
+//                 func_800621D8();
+//                 frameAdvance = 0;
+//                 controller1PressedButtons = 0;
+//                 another_frame_count++;
+//             } else {
+//                 copyInputs();
+//                 stepFrame();
+//             }
+//         }
+//     }
+// }
+
+void mainThreadHook2 (void) {
+    sleepVProcess();
+    func_8002B6C8();
+    func_8001DFC0();
+    func_80025658(0x02000000, 0x003D0800);
+    func_800621D8();
 }
 
 void debugDrawThreadHook(void) {
