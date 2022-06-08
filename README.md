@@ -19,7 +19,7 @@ C-up advances the seed forwards by 1</br>
 C-down advances the seed backwards by 1</br>
 C-right advances the seed forwards by 16</br>
 C-left advances the seed backwards by 16</br>
-R toggles frame advance while L steps 1 frame forward</br>
+~~R toggles frame advance while L steps 1 frame forward~~ broken, removed currently </br>
 Dpad up toggles the box display at the top left of the screen</br>
 Dpad left saves the current seed</br>
 Dpad down loads the saved seed</br>
